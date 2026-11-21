@@ -60,4 +60,34 @@ $('start').disabled=true;$('manual').disabled=true;
 if(!nonce||!window.opener){$('operationTitle').textContent='Abrí el escáner desde CONFORT STOCK';$('operationDetail').textContent='Esta versión necesita una operación del portal.';}else{let sendReady=()=>{if(!config)window.opener.postMessage({type:'CONFORT_READY',nonce},'*');};sendReady();const timer=setInterval(()=>{if(config)clearInterval(timer);else sendReady();},800);}
 window.addEventListener('pagehide',()=>{if(active)$('stop').click();});
 </script>
+
+<style>
+#manualConfortBackdrop[hidden]{display:none!important}#manualConfortBackdrop{position:fixed;inset:0;z-index:1000;background:#001b2bb9;display:grid;place-items:center;padding:14px}#manualConfortBox{background:white;color:#183549;max-width:430px;width:100%;border-radius:16px;padding:20px;box-shadow:0 15px 60px #0018}#manualConfortBox h2{margin:0 0 8px;font-size:20px}#manualConfortBox label{display:block;margin:12px 0 6px;font-weight:650}#manualConfortBox input{box-sizing:border-box;width:100%;font-size:18px;border:1px solid #9db3bf;border-radius:9px;padding:12px}#manualConfortBox button{width:100%;margin-top:9px}#manualConfortBox .hint{background:#eef5f8;padding:11px;border-radius:9px;margin:10px 0;font-size:14px}#manualConfortBox .sample{font:700 17px ui-monospace,monospace;overflow-wrap:anywhere}#manualConfortError{color:#b42318;font-weight:650;min-height:20px}
+</style>
+<div id="manualConfortBackdrop" hidden><div id="manualConfortBox" role="dialog" aria-modal="true" aria-labelledby="manualConfortTitle"><h2 id="manualConfortTitle">Ingresar serie manualmente</h2><p id="manualConfortBrand"></p><div class="hint"><div>Formato de ejemplo (no corresponde a tu equipo):</div><div class="sample" id="manualConfortExample"></div><p id="manualConfortHint"></p></div><label for="manualConfortInput">Serie de la etiqueta</label><input id="manualConfortInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escribí la serie exacta"><p id="manualConfortError" role="status"></p><button type="button" class="primary" id="manualConfortAccept">Incorporar serie</button><button type="button" id="manualConfortCancel">Cancelar</button></div></div>
+<script>
+// Guía de escritura sin cambiar la validación ni el motor del escáner V15.
+(()=>{
+ const byId=id=>document.getElementById(id),box=byId('manualConfortBackdrop');
+ const examples={TRANE:'2625HA01870A',HISENSE:'1KA03600VAAP0898CPN0095',YORK:'100401229230600039',BGH:'2112252790102XA010561',SIAM:'140201C4EVN23266R000055',MIDEA:'1234A12345',LG:'123ABCD45123',HITACHI:'RF12345UI123456'};
+ const notes={TRANE:'Buscá la inscripción S/N o Serial No., no el número de modelo.',YORK:'Buscá SERIAL NUMBER, no MODEL NUMBER.',HISENSE:'Copiá las letras y números completos de la etiqueta.'};
+ byId('manual').onclick=()=>{
+   if(!config||sent||acknowledged||busy)return;
+   if(active)byId('stop').click();
+   const brand=String(config.brand||'').toUpperCase();
+   byId('manualConfortBrand').textContent='Marca: '+(brand||'No especificada');
+   byId('manualConfortExample').textContent=examples[brand]||'Consultá S/N en la etiqueta';
+   byId('manualConfortHint').textContent=notes[brand]||'Buscá la serie original identificada como SERIAL, S/N o N.º de serie; no copies el modelo.';
+   byId('manualConfortInput').value='';byId('manualConfortError').textContent='';box.hidden=false;byId('manualConfortInput').focus();
+ };
+ byId('manualConfortCancel').onclick=()=>box.hidden=true;
+ byId('manualConfortAccept').onclick=()=>{
+   if(!config||sent||acknowledged||busy)return;
+   const r=serialCandidate(byId('manualConfortInput').value,'MANUAL');
+   if(r.repeat||r.error){byId('manualConfortError').textContent=r.error||'La serie ya fue incorporada';return;}
+   accepted.push(r);seen.add(r.serie);feedback('new',r.serie);redraw();box.hidden=true;
+ };
+ byId('manualConfortInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('manualConfortAccept').click();});
+})();
+</script>
 </body></html>
