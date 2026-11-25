@@ -30,7 +30,7 @@ function redraw(){
  const initial=config.initial||{UI:0,UE:0},goal=config.goal;
  $('counts').replaceChildren(...['UI','UE'].map((t,i)=>{const d=document.createElement('div'),b=document.createElement('b'),s=document.createElement('small');b.textContent=String((initial[t]||0)+(i?ue:ui))+(goal!=null?' / '+goal:'');s.textContent=i?'Condensadoras':'Evaporadoras';d.append(b,s);return d;}));
  $('history').replaceChildren(...accepted.map((r,i)=>{const li=document.createElement('li'),btn=document.createElement('button');li.textContent=(r.tipoUnidad||'')+' · '+r.serie+' ';btn.textContent='Quitar';btn.disabled=sent||acknowledged;btn.onclick=()=>{if(sent||acknowledged)return;if(active)$('stop').click();accepted.splice(i,1);seen.delete(r.serie);rows=rows.filter(x=>x.code!==r.serie);redraw();};li.append(btn);return li;}));
- $('finish').disabled=sent||acknowledged||(!accepted.length&&config.operation!=='INVENTARIO');
+ $('finish').disabled=sent||acknowledged||(!accepted.length&&config.operation!=='INVENTARIO');$('backup').hidden=!(accepted.length&&!acknowledged);
 }
 function coincideMascaraCamaraConfort(serie,mascara){if(!mascara||serie.length!==mascara.length||!/^[9AX-]{6,40}$/.test(mascara))return false;return [...mascara].every((c,i)=>c==='9'?/[0-9]/.test(serie[i]):c==='A'?/[A-Z]/.test(serie[i]):c==='X'?/[A-Z0-9]/.test(serie[i]):serie[i]==='-');}
 function serialCandidate(raw,method){
@@ -50,15 +50,42 @@ function serialCandidate(raw,method){
 accept=function(raw,result){if(!config||sent||acknowledged)return;const r=serialCandidate(raw,'CAMARA');if(r.repeat){feedback('repeat',r.code);return;}if(r.error){feedback('invalid',r.code||'');$('status').textContent=r.error;return;}accepted.push(r);seen.add(r.serie);lastNew=now();feedback('new',r.serie);beep();redraw();};
 $('manual').onclick=()=>{if(!config||sent||acknowledged||busy)return;if(active)$('stop').click();const v=prompt('Número de serie exacto de la etiqueta');if(v===null)return;const r=serialCandidate(v,'MANUAL');if(r.repeat||r.error){alert(r.error||'Serie ya escaneada');return;}if(!confirm('Confirmar serie: '+r.serie+'?'))return;accepted.push(r);seen.add(r.serie);feedback('new',r.serie);redraw();};
 function post(type,payload={}){if(window.opener&&parentOrigin)window.opener.postMessage({type,nonce,...payload},parentOrigin);}
+// El lote conserva su identificador y contenido para permitir reintentos sin duplicar registros.
+function mandarLotePendiente(){if(!sent||acknowledged||!config)return;try{post('CONFORT_RESULT',{readings:accepted});}catch(e){$('returnStatus').textContent='No se pudo contactar al portal: '+e.message;}}
+
 window.addEventListener('message',e=>{if(e.source!==window.opener||!trustedOrigin(e.origin)||e.data?.nonce!==nonce)return;
  if(e.data.type==='CONFORT_CONFIG'&&!config){parentOrigin=e.origin;config=e.data.config;if(!['INGRESO','EGRESO','INVENTARIO'].includes(config.operation))return;expected=new Map((config.expected||[]).map(r=>[normalize(r.serie),r]));existing=new Set((config.existing||[]).map(normalize));$('mode').value=(config.masks?.[config.unit]?'all':(modeByBrand[config.brand]||'multi'));$('operationTitle').textContent=config.operation==='INGRESO'?'Ingreso · '+(config.unit==='UI'?'Evaporadoras':'Condensadoras'):config.operation==='EGRESO'?'Entrega · '+(config.unit==='UI'?'Evaporadoras':'Condensadoras'):'Control de stock';$('operationDetail').textContent=config.detail||'';$('start').disabled=false;$('manual').disabled=false;$('status').textContent='Abriendo cámara…';$('finish').textContent=config.operation==='INGRESO'?'Finalizar escaneo y volver':'Confirmar lecturas y volver';redraw();if(document.readyState==='complete')$('start').click();else window.addEventListener('load',()=>{$('start').click();},{once:true});}
- if(e.data.type==='CONFORT_ACK'&&!acknowledged){acknowledged=true;clearInterval(sendTimer);$('returnStatus').textContent='Lecturas transferidas al portal. Si no vuelve automáticamente, cerrá esta pestaña.';$('finish').disabled=true;$('backup').hidden=true;try{window.opener.focus();}catch{}window.close();}if(e.data.type==='CONFORT_ERROR'&&sent&&!acknowledged){clearInterval(sendTimer);sent=false;redraw();$('returnStatus').textContent=e.data.message||'El portal rechazó las lecturas.';$('backup').hidden=false;}
+ if(e.data.type==='CONFORT_REQUEST_RESULT'&&sent&&!acknowledged){mandarLotePendiente();return;}if(e.data.type==='CONFORT_ACK'&&!acknowledged){acknowledged=true;clearInterval(sendTimer);$('returnStatus').textContent='Lecturas transferidas al portal. Si no vuelve automáticamente, cerrá esta pestaña.';$('finish').disabled=true;$('backup').hidden=true;try{window.opener.focus();}catch{}window.close();}if(e.data.type==='CONFORT_ERROR'&&sent&&!acknowledged){clearInterval(sendTimer);sent=false;redraw();$('returnStatus').textContent=e.data.message||'El portal rechazó las lecturas.';$('backup').hidden=false;}
 });
-$('finish').onclick=()=>{if(!config||sent||busy)return;if(active)$('stop').click();if(config.operation==='INGRESO'&&config.goal!=null&&accepted.length+(config.initial?.[config.unit]||0)!==config.goal){$('returnStatus').textContent='Completá la cantidad de unidades antes de finalizar.';return;}sent=true;redraw();$('returnStatus').textContent='Enviando lecturas al portal…';let attempts=0;const send=()=>{if(acknowledged)return;try{post('CONFORT_RESULT',{readings:accepted});}catch{}if(++attempts>=12){clearInterval(sendTimer);if(!acknowledged){$('returnStatus').textContent='El portal no confirmó la recepción. Reintentá o copiá el respaldo antes de cerrar.';sent=false;redraw();$('backup').hidden=false;}}};sendTimer=setInterval(send,700);send();};
+$('finish').onclick=()=>{
+ if(!config||sent||busy)return;
+ if(active)$('stop').click();
+ if(config.operation==='INGRESO'&&config.goal!=null&&accepted.length+(config.initial?.[config.unit]||0)!==config.goal){$('returnStatus').textContent='Completá la cantidad de unidades antes de finalizar.';return;}
+ sent=true;redraw();$('returnStatus').textContent='Enviando lecturas al portal…';
+ // La primera llamada se hace durante el clic del usuario. Chrome Android puede suspender el portal;
+ // al volver a su pestaña, el portal pedirá el lote pendiente nuevamente.
+ mandarLotePendiente();
+ let attempts=0;
+ clearInterval(sendTimer);
+ sendTimer=setInterval(()=>{
+   if(acknowledged){clearInterval(sendTimer);return;}
+   mandarLotePendiente();attempts++;
+   if(attempts===5){
+     $('returnStatus').textContent='Esperando confirmación del portal. Si no vuelve automáticamente, cambiá a la pestaña CONFORT STOCK: intentaremos transferir las lecturas al reactivarla.';
+     try{window.opener?.focus();}catch(e){}
+   }
+   if(attempts>=40){
+     clearInterval(sendTimer);sent=false;redraw();
+     $('returnStatus').textContent='Sin confirmación. Usá Copiar respaldo de lecturas y en CONFORT STOCK tocá Recuperar lecturas de la cámara. NO repitas el escaneo.';
+   }
+ },1000);
+};
 $('backup').onclick=async()=>{if(!config||!accepted.length)return;const text=JSON.stringify({nonce,readings:accepted});try{await navigator.clipboard.writeText(text);$('returnStatus').textContent='Respaldo copiado. Volvé al portal y usá Recuperar lecturas de la cámara.';}catch{prompt('Copiá este respaldo de lecturas:',text);}};
 $('cancel').onclick=()=>{if(sent&&!acknowledged){$('returnStatus').textContent='Esperá la confirmación de las lecturas o copiá el respaldo.';return;}if(active)$('stop').click();if(accepted.length&&!confirm('¿Descartar las lecturas de esta sesión?'))return;post('CONFORT_CANCEL');window.close();};
 $('start').disabled=true;$('manual').disabled=true;
 if(!nonce||!window.opener){$('operationTitle').textContent='Abrí el escáner desde CONFORT STOCK';$('operationDetail').textContent='Esta versión necesita una operación del portal.';}else{let sendReady=()=>{if(!config)window.opener.postMessage({type:'CONFORT_READY',nonce},'*');};sendReady();const timer=setInterval(()=>{if(config)clearInterval(timer);else sendReady();},800);}
+window.addEventListener('focus',()=>{if(sent&&!acknowledged)mandarLotePendiente();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sent&&!acknowledged)mandarLotePendiente();});
 window.addEventListener('pagehide',()=>{if(active)$('stop').click();});
 </script>
 
