@@ -33,6 +33,11 @@ function redraw(){
  $('finish').disabled=sent||acknowledged||(!accepted.length&&config.operation!=='INVENTARIO');$('backup').hidden=!(accepted.length&&!acknowledged);
 }
 function coincideMascaraCamaraConfort(serie,mascara){if(!mascara||serie.length!==mascara.length||!/^[9AX-]{6,40}$/.test(mascara))return false;return [...mascara].every((c,i)=>c==='9'?/[0-9]/.test(serie[i]):c==='A'?/[A-Z]/.test(serie[i]):c==='X'?/[A-Z0-9]/.test(serie[i]):serie[i]==='-');}
+function coincideAprendidoConfort(code,unidad){
+ if(!/[A-Z]/.test(code)||!/\d/.test(code)||!/^[A-Z0-9]{8,40}$/.test(code))return false;
+ const masks=Array.isArray(config?.learned?.[unidad])?config.learned[unidad]:[];
+ return masks.some(mask=>coincideMascaraCamaraConfort(code,mask));
+}
 function serialCandidate(raw,method){
  const code=normalize(raw);if(!code||!/^[A-Z0-9][A-Z0-9._/-]{0,149}$/.test(code))return {error:'Formato inválido'};
  if(existing.has(code)||accepted.some(x=>x.serie===code))return {repeat:true,code};
@@ -43,7 +48,7 @@ function serialCandidate(raw,method){
    if(limit!=null&&n>=limit)return {error:'Cantidad de '+record.tipoUnidad+' completa',code};
    return {serie:code,tipoUnidad:record.tipoUnidad,idModelo:record.idModelo,metodo:method};
  }
- if(method==='CAMARA'&&identify(code)!==config.brand&&!coincideMascaraCamaraConfort(code,config.masks?.[config.unit]))return {error:'No corresponde al patrón de '+config.brand,code};
+ if(method==='CAMARA'&&identify(code)!==config.brand&&!coincideMascaraCamaraConfort(code,config.masks?.[config.unit])&&!coincideAprendidoConfort(code,config.unit))return {error:'No corresponde al patrón de '+config.brand+'. Podés ingresarlo manualmente para aprender el formato tras confirmar el ingreso.',code};
  if(config.goal!=null&&accepted.length+(config.initial?.[config.unit]||0)>=config.goal)return {error:'Cantidad completa',code};
  return {serie:code,tipoUnidad:config.unit,metodo:method};
 }
@@ -113,7 +118,7 @@ window.addEventListener('pagehide',()=>{if(active)$('stop').click();});
    if(!config||sent||acknowledged||busy)return;
    const r=serialCandidate(byId('manualConfortInput').value,'MANUAL');
    if(r.repeat||r.error){byId('manualConfortError').textContent=r.error||'La serie ya fue incorporada';return;}
-   accepted.push(r);seen.add(r.serie);feedback('new',r.serie);redraw();box.hidden=true;
+   if(!confirm('¿Confirmás que '+r.serie+' es el NÚMERO DE SERIE individual (S/N) de este equipo? Si el ingreso se confirma, CONFORT STOCK aprenderá su formato para futuras lecturas. No uses códigos de modelo, lote o EAN.'))return;accepted.push(r);seen.add(r.serie);feedback('new',r.serie);redraw();box.hidden=true;
  };
  byId('manualConfortInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('manualConfortAccept').click();});
 })();
