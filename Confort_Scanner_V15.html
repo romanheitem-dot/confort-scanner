@@ -59,6 +59,12 @@ function post(type,payload={}){if(window.opener&&parentOrigin)window.opener.post
 function mandarLotePendiente(){if(!sent||acknowledged||!config)return;try{post('CONFORT_RESULT',{readings:accepted});}catch(e){$('returnStatus').textContent='No se pudo contactar al portal: '+e.message;}}
 
 window.addEventListener('message',e=>{if(e.source!==window.opener||!trustedOrigin(e.origin)||e.data?.nonce!==nonce)return;
+ if(e.data.type==='CONFORT_LEARNED'&&config){
+   const learned=e.data.learned;
+   if(learned&&typeof learned==='object'&&Array.isArray(learned.UI)&&Array.isArray(learned.UE)){
+     config.learned={UI:learned.UI.filter(x=>typeof x==='string'),UE:learned.UE.filter(x=>typeof x==='string')};
+   }
+ }
  if(e.data.type==='CONFORT_CONFIG'&&!config){parentOrigin=e.origin;config=e.data.config;if(!['INGRESO','EGRESO','INVENTARIO'].includes(config.operation))return;expected=new Map((config.expected||[]).map(r=>[normalize(r.serie),r]));existing=new Set((config.existing||[]).map(normalize));$('mode').value=(config.masks?.[config.unit]?'all':(modeByBrand[config.brand]||'multi'));$('operationTitle').textContent=config.operation==='INGRESO'?'Ingreso · '+(config.unit==='UI'?'Evaporadoras':'Condensadoras'):config.operation==='EGRESO'?'Entrega · '+(config.unit==='UI'?'Evaporadoras':'Condensadoras'):'Control de stock';$('operationDetail').textContent=config.detail||'';$('start').disabled=false;$('manual').disabled=false;$('status').textContent='Abriendo cámara…';$('finish').textContent=config.operation==='INGRESO'?'Finalizar escaneo y volver':'Confirmar lecturas y volver';redraw();if(document.readyState==='complete')$('start').click();else window.addEventListener('load',()=>{$('start').click();},{once:true});}
  if(e.data.type==='CONFORT_REQUEST_RESULT'&&sent&&!acknowledged){mandarLotePendiente();return;}if(e.data.type==='CONFORT_ACK'&&!acknowledged){acknowledged=true;clearInterval(sendTimer);$('returnStatus').textContent='Lecturas transferidas al portal. Si no vuelve automáticamente, cerrá esta pestaña.';$('finish').disabled=true;$('backup').hidden=true;try{window.opener.focus();}catch{}window.close();}if(e.data.type==='CONFORT_ERROR'&&sent&&!acknowledged){clearInterval(sendTimer);sent=false;redraw();$('returnStatus').textContent=e.data.message||'El portal rechazó las lecturas.';$('backup').hidden=false;}
 });
