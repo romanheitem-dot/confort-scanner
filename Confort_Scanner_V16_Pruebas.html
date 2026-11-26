@@ -41,25 +41,58 @@ function queueCloud(type,item={}){
  if(cloudQueue.length>1500){cloudRender('ATENCIÓN: 1500 registros pendientes. Verificá la conexión con Google Sheets.');}
  cloudStore();cloudRender();cloudSend();
 }
-function cloudFrame(){let frame=document.getElementById('cloudPostFrame');if(!frame){frame=document.createElement('iframe');frame.name='cloudPostFrame';frame.id='cloudPostFrame';frame.setAttribute('title','Sincronización de lecturas');frame.style.cssText='position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none';document.body.append(frame);}return frame;}
+// Google Apps Script responds with a JavaScript callback (JSONP). This avoids the
+// nested HtmlService iframe and cross-origin postMessage failure on Android.
+let cloudScript=null;
+function cloudScriptClear(){
+ if(cloudScript){cloudScript.remove();cloudScript=null;}
+ clearTimeout(cloudTimer);
+}
+function cloudFinish(d){
+ if(!cloudSending||!d||d.id!==cloudSending.id)return;
+ cloudScriptClear();
+ if(d.ok){
+  cloudQueue=cloudQueue.filter(e=>e.id!==d.id);
+  cloudSaved++;
+  try{localStorage.setItem(CLOUD_STATS_KEY,String(cloudSaved));}catch{}
+  cloudStore();cloudSending=null;
+  cloudRender('✓ Último registro confirmado por Google Sheets.');
+  setTimeout(cloudSend,200);
+ }else{
+  cloudSending=null;cloudFailures++;
+  cloudRender('ERROR de Sheets: '+String(d.error||'No se pudo guardar').slice(0,170));
+ }
+}
+window.__scv16JsonpAck=cloudFinish;
 function cloudSend(){
  if(!cloudUrl||!cloudQueue.length||cloudSending)return;
  const evt=cloudQueue[0];cloudSending=evt;
- const iframe=cloudFrame();
- const form=document.createElement('form');form.method='POST';form.action=cloudUrl;form.target=iframe.name;form.style.display='none';
- const field=document.createElement('input');field.type='hidden';field.name='payload';field.value=JSON.stringify(evt);form.append(field);document.body.append(form);
- try{form.submit();cloudRender('Enviando lecturas a la planilla…');}catch(e){cloudFailures++;cloudSending=null;cloudRender('ERROR de envío: '+e.message);}finally{form.remove();}
- clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>{if(cloudSending?.id===evt.id){cloudSending=null;cloudFailures++;cloudRender('Sin confirmación de Sheets. Conservamos la lectura y volveremos a intentar.');}},18000);
+ let url;
+ try{
+  url=new URL(cloudUrl);
+  url.searchParams.set('payload',JSON.stringify(evt));
+  url.searchParams.set('callback','__scv16JsonpAck');
+  url.searchParams.set('_',String(Date.now()));
+  if(url.toString().length>6500)throw Error('El registro es demasiado grande.');
+ }catch(e){cloudSending=null;cloudFailures++;cloudRender('ERROR: '+e.message);return;}
+ const script=document.createElement('script');
+ cloudScript=script;
+ script.async=true;
+ script.referrerPolicy='no-referrer';
+ script.src=url.toString();
+ script.onerror=()=>{
+  if(cloudSending?.id!==evt.id)return;
+  cloudScriptClear();cloudSending=null;cloudFailures++;
+  cloudRender('ERROR: Google Apps Script no respondió. La lectura sigue pendiente.');
+ };
+ cloudTimer=setTimeout(()=>{
+  if(cloudSending?.id!==evt.id)return;
+  cloudScriptClear();cloudSending=null;cloudFailures++;
+  cloudRender('Sin confirmación de Sheets. Se conserva la lectura pendiente para reintentar.');
+ },20000);
+ document.head.appendChild(script);
+ cloudRender('Enviando lecturas a la planilla…');
 }
-window.addEventListener('message',event=>{
- if(!cloudSending)return;
- if(!/^https:\/\/([\w.-]*googleusercontent\.com|script\.google\.com)$/.test(event.origin))return;
- const d=event.data;
- if(!d||d.type!=='CONFORT_V16_SHEET_ACK'||d.id!==cloudSending.id)return;
- clearTimeout(cloudTimer);
- if(d.ok){cloudQueue=cloudQueue.filter(e=>e.id!==d.id);cloudSaved++;try{localStorage.setItem(CLOUD_STATS_KEY,String(cloudSaved));}catch{};cloudStore();cloudSending=null;cloudRender('✓ Último registro confirmado por Google Sheets.');setTimeout(cloudSend,200);}
- else{cloudSending=null;cloudFailures++;cloudRender('ERROR de Sheets: '+String(d.error||'No se pudo guardar').slice(0,170));}
-});
 function cloudStart(){
  cloudUrl=cloudValidUrl(el('cloudUrl').value.trim());
  if(!cloudUrl){cloudRender('ERROR: pegá la URL /exec de la aplicación web de pruebas (script.google.com).');return;}
@@ -70,7 +103,7 @@ function cloudInit(){
  try{cloudUrl=cloudValidUrl(localStorage.getItem(CLOUD_URL_KEY)||'');cloudQueue=JSON.parse(localStorage.getItem(CLOUD_QUEUE_KEY)||'[]');if(!Array.isArray(cloudQueue))cloudQueue=[];cloudSaved=Number(localStorage.getItem(CLOUD_STATS_KEY)||0)||0;}catch{cloudQueue=[];}
  el('cloudUrl').value=cloudUrl;cloudRender(cloudUrl?'Planilla configurada. Las lecturas se enviarán automáticamente.':'Sin conectar: pegá la URL del receptor de pruebas una sola vez.');
  el('cloudConnect').onclick=cloudStart;
- el('cloudRetry').onclick=()=>{if(!cloudUrl)cloudStart();else{cloudSending=null;clearTimeout(cloudTimer);cloudSend();}};
+ el('cloudRetry').onclick=()=>{if(!cloudUrl)cloudStart();else if(cloudSending)cloudRender('Ya hay un envío en curso. Esperá su respuesta.');else cloudSend();};
  window.addEventListener('online',cloudSend);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)cloudSend();});
  setInterval(()=>{if(!cloudSending)cloudSend();},15000);
