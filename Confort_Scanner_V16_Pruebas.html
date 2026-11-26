@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a425f">
-<title>CONFORT SCANNER V16 — Laboratorio</title>
+<title>CONFORT SCANNER V16 — Laboratorio · Sync 2</title>
 <style>
 :root{--blue:#0b4866;--blue2:#08364d;--ink:#173449;--muted:#5b7180;--line:#d8e3e9;--bg:#f2f6f8;--good:#157347;--warn:#99610c;--bad:#b1252b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}header{background:var(--blue);color:#fff;padding:17px max(16px,env(safe-area-inset-left));box-shadow:0 2px 10px #153a5024}.shell{max-width:800px;margin:auto}.top{display:flex;align-items:center;gap:13px}.snow{flex:0 0 auto;width:37px;height:37px}header strong{display:block;font-size:22px;letter-spacing:.02em}header small{opacity:.9}main{padding:13px 13px 55px}section{background:#fff;border:1px solid var(--line);border-radius:15px;margin:12px 0;padding:16px;box-shadow:0 2px 9px #17344906}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:12px 0 8px}label{display:block;font-weight:650;margin:10px 0 5px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:12px;border:1px solid #adbfcb;border-radius:10px;background:#fff;color:var(--ink)}button{min-height:43px;padding:10px 12px;background:white;border:1px solid #bfd0d9;color:var(--ink);border-radius:10px;font-weight:650;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.danger{color:var(--bad);border-color:#e9b5b5}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.buttons>*{flex:1 1 auto}.columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.note{font-size:13px;color:var(--muted)}.notice{background:#eef7fb;border:1px solid #cce2ef;padding:10px;border-radius:9px}.status{margin:8px 0;color:var(--muted);overflow-wrap:anywhere}.status.error{color:var(--bad);font-weight:650}.status.ok{color:var(--good)}#frame{background:#142c3a;position:relative;overflow:hidden;min-height:170px;border-radius:12px;outline:4px solid transparent;outline-offset:2px}#frame video{display:block;width:100%;max-height:370px;object-fit:contain}#frame:has(video:not([srcObject])){min-height:180px}#frame .guides{pointer-events:none;position:absolute;top:35%;height:30%;left:5%;right:5%;border:2px solid #fff9;border-radius:8px}#frame.good{outline-color:#199459}#frame.warn{outline-color:#d7a72f}#frame.bad{outline-color:#c83a44}#result{position:absolute;bottom:8px;left:8px;right:8px;text-align:center;padding:8px 6px;border-radius:8px;display:none;font-weight:750;overflow-wrap:anywhere;background:#e3f6ec;color:#165b39}#frame.good #result{display:block}#frame.warn #result{display:block;background:#fff2c8;color:#775106}#frame.bad #result{display:block;background:#ffe1e1;color:#9b1720}.pill{display:inline-block;background:#eef3f6;color:#345166;padding:4px 8px;border-radius:18px;font-size:12px;font-weight:650}.pill.good{background:#e1f3e8;color:#136839}.pill.warn{background:#ffefcf;color:#855c12}.pill.bad{background:#fbe3e4;color:#a12029}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summary div{padding:12px 6px;background:#f4f7f8;border-radius:10px;text-align:center}.summary strong{display:block;font-size:23px}.summary small{color:var(--muted);font-size:12px}#readings{list-style:none;margin:10px 0;padding:0;display:grid;gap:9px}#readings li{border:1px solid var(--line);border-radius:10px;padding:10px}#readings code{font-size:13px;word-break:break-all;white-space:pre-wrap}.entrytop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.entry-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.entry-actions button{min-height:33px;padding:5px 10px;font-size:13px}.entrymeta{color:var(--muted);font-size:12px}details{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}summary{font-weight:700;cursor:pointer}.learned{display:grid;gap:9px;margin:10px 0}.learned article{padding:10px;border:1px solid var(--line);border-radius:10px}.learned code{word-break:break-all}#zoomGroup{display:none;align-items:center;gap:10px}#zoomGroup input{flex:1}.hidden{display:none!important}.checkbox{display:flex;align-items:flex-start;gap:9px;font-weight:400}.checkbox input{width:auto;margin-top:4px}.footer-note{color:#607381;font-size:12px}#diag{font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6f8;padding:10px;border-radius:9px;max-height:160px;overflow:auto}hr{border:0;border-top:1px solid var(--line);margin:14px 0}@media(max-width:550px){.columns{grid-template-columns:1fr}.buttons>*{flex:1 1 45%}header strong{font-size:19px}}
 </style>
@@ -14,7 +14,7 @@
 <header><div class="shell top"><svg class="snow" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 3v42M6 13l36 22M6 35l36-22M18 9l6 6 6-6M18 39l6-6 6 6M8 20l8-2-1-8M40 28l-8 2 1 8M15 38l1-8-8-2M33 10l-1 8 8 2"/></svg><div><strong>CONFORT SCANNER</strong><small>V16 · Laboratorio independiente de lectura</small></div></div></header>
 <main class="shell">
 <section><div class="notice"><strong>Modo de pruebas.</strong> Esta cámara NO modifica el stock. Opcionalmente registra cada lectura en una planilla de PRUEBAS independiente. V15 sigue intacta.</div><div class="columns"><div><label for="brand">Marca del equipo</label><select id="brand"><option>TRANE</option><option>HISENSE</option><option>LG</option><option>MIDEA</option><option>HITACHI</option><option>YORK</option><option>SIAM</option><option>BGH</option><option>ELECTRA</option><option>OTRA</option></select></div><div><label for="unit">Tipo de unidad</label><select id="unit"><option value="UI">Evaporadora (UI)</option><option value="UE">Condensadora (UE)</option><option value="UNICA">Unidad con una serie</option></select></div></div><label for="scanMode">Qué detectar</label><select id="scanMode"><option value="serial">Series: validar formatos y descartar códigos comerciales</option><option value="all">Diagnóstico: mostrar TODOS los códigos detectados</option></select><p class="note">El modo diagnóstico sirve para identificar por qué una etiqueta no se acepta. No equivale a confirmar que sea una serie.</p></section>
-<section><h2>Registro automático en Google Sheets</h2><p class="note">Configurá una vez la URL del receptor de pruebas. Desde entonces, cada lectura se envía sola. No necesitás exportar archivos ni tocar Guardar.</p><label for="cloudUrl">URL de aplicación web del registro de pruebas (/exec)</label><input id="cloudUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" spellcheck="false"><div class="buttons"><button id="cloudConnect" class="primary">Conectar planilla y probar</button><button id="cloudRetry">Reintentar pendientes</button></div><p id="cloudStatus" class="status">Sin conectar a la planilla. La cámara sigue funcionando.</p><div class="summary"><div><strong id="cloudSaved">0</strong><small>Envíos confirmados</small></div><div><strong id="cloudPending">0</strong><small>Pendientes</small></div><div><strong id="cloudFailures">0</strong><small>Errores de envío</small></div></div><p class="note">La planilla confirma cada envío. Si no hay confirmación, queda pendiente para reintentar. Si el almacenamiento local del navegador está lleno, se mostrará una advertencia.</p></section>
+<section><h2>Registro automático en Google Sheets <small style="font-size:11px;color:#537286;font-weight:500">Sync 2 · 26/11</small></h2><p class="note">Configurá una vez la URL del receptor de pruebas. Desde entonces, cada lectura se envía sola. No necesitás exportar archivos ni tocar Guardar.</p><label for="cloudUrl">URL de aplicación web del registro de pruebas (/exec)</label><input id="cloudUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" spellcheck="false"><div class="buttons"><button id="cloudConnect" class="primary">Conectar planilla y probar</button><button id="cloudRetry">Reintentar pendientes</button></div><p id="cloudStatus" class="status">Sin conectar a la planilla. La cámara sigue funcionando.</p><div class="summary"><div><strong id="cloudSaved">0</strong><small>Envíos confirmados</small></div><div><strong id="cloudPending">0</strong><small>Pendientes</small></div><div><strong id="cloudFailures">0</strong><small>Errores de envío</small></div></div><p class="note">La planilla confirma cada envío. Si no hay confirmación, queda pendiente para reintentar. Si el almacenamiento local del navegador está lleno, se mostrará una advertencia.</p></section>
 <section><h2>1. Cámara</h2><div id="frame"><video id="video" autoplay muted playsinline></video><div class="guides"></div><div id="result" role="status"></div></div><div class="buttons"><button id="start" class="primary">Iniciar cámara</button><button id="stop" disabled>Detener</button><button id="torch" disabled>Linterna</button></div><div id="zoomGroup"><label for="zoom">Zoom</label><input type="range" id="zoom" step="0.1" min="1" max="3" value="1"><span id="zoomVal">1×</span></div><div id="cameraStatus" class="status">Lista para iniciar. Permití el acceso a la cámara cuando Chrome lo solicite.</div><p id="motorStatus" class="note">Motores: cámara Android/Chrome y alternativa ZXing.</p></section>
 <section><h2>2. Carga manual y aprendizaje</h2><label for="manual">Número de serie exactamente como figura en S/N</label><input id="manual" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ejemplo: 2KK0U20300010715UJ70358"><div class="buttons"><button id="manualAdd" class="primary">Confirmar serie manual</button></div><p class="note">Si el formato es nuevo, te pediremos confirmación. Ese formato quedará aprendido <strong>en este navegador</strong> y registrado en la planilla si la sincronización está activa, para esta marca y este tipo de unidad. No alcanza para demostrar que otra etiqueta sea auténtica.</p><div id="manualStatus" class="status"></div></section>
 <section><h2>3. Resultados de la prueba</h2><div class="summary"><div><strong id="count">0</strong><small>Lecturas únicas</small></div><div><strong id="confirmed">0</strong><small>Series confirmadas</small></div><div><strong id="patterns">0</strong><small>Patrones aprendidos</small></div></div><ul id="readings"></ul><div class="buttons"><button id="exportCSV">Exportar lecturas CSV</button><button id="exportJSON">Respaldar formatos JSON</button><button id="resetRun" class="danger">Limpiar lecturas</button></div><details><summary>Formatos aprendidos y administración</summary><p class="note">Para reconocer una serie automáticamente, el patrón necesita coincidencia de posición entre letras y números. Se guarda un registro por marca y unidad, y se puede borrar o exportar. Un formato aprendido es provisional y debe verificarse con la etiqueta real.</p><div id="learned" class="learned"></div><label for="importFile">Restaurar formatos desde respaldo JSON</label><input type="file" id="importFile" accept=".json,application/json"><button id="clearPatterns" class="danger">Borrar todos los formatos aprendidos</button><p id="storageStatus" class="status"></p></details><details><summary>Diagnóstico técnico</summary><div id="diag">Sin eventos.</div></details></section><p class="footer-note">Laboratorio V16 · Los resultados nunca se transfieren al stock: solo a la planilla temporal de pruebas, si está conectada. Se recomienda utilizar HTTPS de GitHub Pages. No se garantiza la lectura de etiquetas dañadas o simbologías no compatibles.</p>
@@ -41,29 +41,59 @@ function queueCloud(type,item={}){
  if(cloudQueue.length>1500){cloudRender('ATENCIÓN: 1500 registros pendientes. Verificá la conexión con Google Sheets.');}
  cloudStore();cloudRender();cloudSend();
 }
-// Google Apps Script responds with a JavaScript callback (JSONP). This avoids the
-// nested HtmlService iframe and cross-origin postMessage failure on Android.
-let cloudScript=null;
+// Confirmación redundante: JSONP directo y POST a iframe como respaldo.
+// Ambas solicitudes usan el MISMO ID_EVENTO; Apps Script evita duplicados.
+let cloudScript=null,cloudFrame=null,cloudForm=null,cloudFallbackTimer=null;
+const CLOUD_WAIT_MS=25000;
 function cloudScriptClear(){
  if(cloudScript){cloudScript.remove();cloudScript=null;}
- clearTimeout(cloudTimer);
+ if(cloudForm){cloudForm.remove();cloudForm=null;}
+ if(cloudFrame){cloudFrame.remove();cloudFrame=null;}
+ clearTimeout(cloudTimer);clearTimeout(cloudFallbackTimer);
+ cloudTimer=null;cloudFallbackTimer=null;
 }
-function cloudFinish(d){
- if(!cloudSending||!d||d.id!==cloudSending.id)return;
+function cloudFinish(d,via){
+ if(!cloudSending||!d||d.type!=='CONFORT_V16_SHEET_ACK'||String(d.id)!==String(cloudSending.id))return;
+ const id=cloudSending.id;
  cloudScriptClear();
+ cloudSending=null;
  if(d.ok){
-  cloudQueue=cloudQueue.filter(e=>e.id!==d.id);
+  cloudQueue=cloudQueue.filter(e=>e.id!==id);
   cloudSaved++;
   try{localStorage.setItem(CLOUD_STATS_KEY,String(cloudSaved));}catch{}
-  cloudStore();cloudSending=null;
-  cloudRender('✓ Último registro confirmado por Google Sheets.');
-  setTimeout(cloudSend,200);
+  cloudStore();
+  cloudRender('✓ Confirmado por Google Sheets ('+via+').');
+  setTimeout(cloudSend,350);
  }else{
-  cloudSending=null;cloudFailures++;
-  cloudRender('ERROR de Sheets: '+String(d.error||'No se pudo guardar').slice(0,170));
+  cloudFailures++;
+  cloudRender('ERROR devuelto por Sheets: '+String(d.error||'No se pudo guardar').slice(0,170));
  }
 }
-window.__scv16JsonpAck=cloudFinish;
+window.__scv16JsonpAck=d=>cloudFinish(d,'JSONP');
+window.addEventListener('message',e=>{
+ if(!cloudSending||!e.data||e.data.type!=='CONFORT_V16_SHEET_ACK')return;
+ // La respuesta de HTML Service puede originarse desde googleusercontent.com.
+ try{const u=new URL(e.origin);if(u.protocol!=='https:'||!(u.hostname==='script.google.com'||u.hostname.endsWith('.googleusercontent.com')))return;}catch{return;}
+ cloudFinish(e.data,'POST');
+});
+function cloudPostFallback(evt){
+ if(!cloudSending||cloudSending.id!==evt.id||cloudFrame)return;
+ try{
+  const frame=document.createElement('iframe');
+  frame.name='scv16_fallback_'+Date.now();
+  frame.setAttribute('title','Confirmación de registro de pruebas');
+  frame.style.cssText='position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;';
+  const form=document.createElement('form');
+  form.method='POST';form.action=cloudUrl;form.target=frame.name;
+  form.style.display='none';
+  const input=document.createElement('input');input.name='payload';input.value=JSON.stringify(evt);
+  form.appendChild(input);
+  document.body.append(frame,form);
+  cloudFrame=frame;cloudForm=form;
+  form.submit();
+  cloudRender('Esperando confirmación: comprobación alternativa en curso…');
+ }catch(err){cloudRender('Sin confirmación directa ni alternativa: '+err.message);}
+}
 function cloudSend(){
  if(!cloudUrl||!cloudQueue.length||cloudSending)return;
  const evt=cloudQueue[0];cloudSending=evt;
@@ -73,40 +103,56 @@ function cloudSend(){
   url.searchParams.set('payload',JSON.stringify(evt));
   url.searchParams.set('callback','__scv16JsonpAck');
   url.searchParams.set('_',String(Date.now()));
-  if(url.toString().length>6500)throw Error('El registro es demasiado grande.');
- }catch(e){cloudSending=null;cloudFailures++;cloudRender('ERROR: '+e.message);return;}
+  if(url.toString().length>6500)throw Error('Registro demasiado grande para el envío directo.');
+ }catch(err){cloudSending=null;cloudFailures++;cloudRender('ERROR: '+err.message);return;}
  const script=document.createElement('script');
  cloudScript=script;
  script.async=true;
- script.referrerPolicy='no-referrer';
  script.src=url.toString();
  script.onerror=()=>{
-  if(cloudSending?.id!==evt.id)return;
-  cloudScriptClear();cloudSending=null;cloudFailures++;
-  cloudRender('ERROR: Google Apps Script no respondió. La lectura sigue pendiente.');
+  if(cloudSending?.id===evt.id)cloudPostFallback(evt);
  };
+ cloudFallbackTimer=setTimeout(()=>{if(cloudSending?.id===evt.id)cloudPostFallback(evt);},8000);
  cloudTimer=setTimeout(()=>{
   if(cloudSending?.id!==evt.id)return;
   cloudScriptClear();cloudSending=null;cloudFailures++;
-  cloudRender('Sin confirmación de Sheets. Se conserva la lectura pendiente para reintentar.');
- },20000);
+  cloudRender('ERROR: Google Sheets no confirmó este envío por ninguna de las dos vías. Se conserva pendiente; no es necesario volver a escanear.');
+ },CLOUD_WAIT_MS);
  document.head.appendChild(script);
- cloudRender('Enviando lecturas a la planilla…');
+ cloudRender('Enviando registro a Google Sheets…');
 }
 function cloudStart(){
- cloudUrl=cloudValidUrl(el('cloudUrl').value.trim());
- if(!cloudUrl){cloudRender('ERROR: pegá la URL /exec de la aplicación web de pruebas (script.google.com).');return;}
+ const proposed=el('cloudUrl').value.trim();
+ const normalized=cloudValidUrl(proposed);
+ if(!normalized){cloudRender('ERROR: la dirección debe empezar por https://script.google.com/macros/s/ y terminar en /exec. No pegues el enlace de Sheets.');return;}
+ cloudUrl=normalized;
+ el('cloudUrl').value=normalized;
  try{localStorage.setItem(CLOUD_URL_KEY,cloudUrl);}catch{}
- cloudRender('Conectando. Enviando registro de prueba…');queueCloud('PRUEBA',{brand:el('brand').value,unit:el('unit').value,code:'PRUEBA_CONEXION',source:'SISTEMA',note:'Conexión inicial de laboratorio'});
+ if(cloudQueue.length){cloudRender('Dirección guardada. Primero se envían los '+cloudQueue.length+' registros pendientes. No se agrega otra prueba.');cloudSend();return;}
+ cloudRender('Conectando: enviando un único registro de prueba…');
+ queueCloud('PRUEBA',{brand:el('brand').value,unit:el('unit').value,code:'PRUEBA_CONEXION',source:'SISTEMA',note:'Conexión inicial de laboratorio'});
 }
 function cloudInit(){
- try{cloudUrl=cloudValidUrl(localStorage.getItem(CLOUD_URL_KEY)||'');cloudQueue=JSON.parse(localStorage.getItem(CLOUD_QUEUE_KEY)||'[]');if(!Array.isArray(cloudQueue))cloudQueue=[];cloudSaved=Number(localStorage.getItem(CLOUD_STATS_KEY)||0)||0;}catch{cloudQueue=[];}
- el('cloudUrl').value=cloudUrl;cloudRender(cloudUrl?'Planilla configurada. Las lecturas se enviarán automáticamente.':'Sin conectar: pegá la URL del receptor de pruebas una sola vez.');
+ try{
+  cloudUrl=cloudValidUrl(localStorage.getItem(CLOUD_URL_KEY)||'');
+  cloudQueue=JSON.parse(localStorage.getItem(CLOUD_QUEUE_KEY)||'[]');
+  if(!Array.isArray(cloudQueue))cloudQueue=[];
+  cloudSaved=Number(localStorage.getItem(CLOUD_STATS_KEY)||0)||0;
+ }catch{cloudQueue=[];}
+ el('cloudUrl').value=cloudUrl;
+ cloudRender(cloudUrl?'Receptor configurado. Se intentará sincronizar lo pendiente.':'Sin receptor configurado: pegá la URL de Apps Script /exec.');
  el('cloudConnect').onclick=cloudStart;
- el('cloudRetry').onclick=()=>{if(!cloudUrl)cloudStart();else if(cloudSending)cloudRender('Ya hay un envío en curso. Esperá su respuesta.');else cloudSend();};
+ el('cloudRetry').onclick=()=>{
+  const typed=cloudValidUrl(el('cloudUrl').value.trim());
+  if(typed&&typed!==cloudUrl){cloudStart();return;}
+  if(!cloudUrl){cloudRender('Primero ingresá y conectá la URL de Apps Script /exec.');return;}
+  if(cloudSending){cloudRender('Hay un envío en curso. Esperá su confirmación.');return;}
+  if(!cloudQueue.length){cloudRender('No hay registros pendientes.');return;}
+  cloudSend();
+ };
  window.addEventListener('online',cloudSend);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)cloudSend();});
- setInterval(()=>{if(!cloudSending)cloudSend();},15000);
+ setInterval(()=>{if(!cloudSending)cloudSend();},20000);
  cloudSend();
 }
 // === FIN REGISTRO AUTOMÁTICO ===
