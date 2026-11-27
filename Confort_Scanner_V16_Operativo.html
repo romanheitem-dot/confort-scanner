@@ -302,6 +302,57 @@ else{
 window.addEventListener('focus',()=>{if(operatorSending&&!operatorAck)operatorSend();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&operatorSending&&!operatorAck)operatorSend();});
 
+
+// === ENTREGA POR PUENTE V16, sin postMessage obligatorio ===
+const PUENTE_V16_URL='https://script.google.com/macros/s/AKfycbyNjF7t92eMCbGYkDTOC_2WxsxF2kmKuydlNbx0xQqZAtmQddqHZJr_GMEb-NDcehDc/exec';
+let puenteV16Guardado=false, puenteV16Enviando=false;
+function puenteV16Enviar(datos){
+ return new Promise((resolve,reject)=>{
+  const cb='__confortBridge'+Math.random().toString(36).slice(2,14);
+  const script=document.createElement('script');let done=false;
+  const finish=(err,res)=>{if(done)return;done=true;clearTimeout(timer);script.remove();delete window[cb];err?reject(err):resolve(res);};
+  window[cb]=res=>finish(null,res);
+  script.onerror=()=>finish(Error('Error de red al enviar las series'));
+  const timer=setTimeout(()=>finish(Error('Sin respuesta del receptor. Conservá el respaldo.')),15000);
+  const url=new URL(PUENTE_V16_URL);
+  url.searchParams.set('callback',cb);url.searchParams.set('bridge','PUT');url.searchParams.set('nonce',bridgeNonce);
+  url.searchParams.set('payload',JSON.stringify(datos));
+  script.src=url.toString();document.head.append(script);
+ });
+}
+function puenteV16Regresar(){
+ operatorStatus.textContent='Lecturas entregadas. Volvé a CONFORT STOCK para revisar el contador.';
+ try{window.opener?.focus();}catch(e){}
+ try{window.close();}catch(e){}
+}
+operatorFinish.onclick=async()=>{
+ if(!bridgeConfig||puenteV16Enviando)return;
+ if(puenteV16Guardado){puenteV16Regresar();return;}
+ const registros=operatorReadings();const initial=Number(bridgeConfig.initial?.[bridgeConfig.unit]||0);
+ if(!registros.length&&bridgeConfig.operation!=='INVENTARIO'){operatorStatus.textContent='Escaneá al menos una serie válida.';return;}
+ if(bridgeConfig.goal!=null&&initial+registros.length!==Number(bridgeConfig.goal)){operatorStatus.textContent='Faltan series ('+(initial+registros.length)+' / '+bridgeConfig.goal+').';return;}
+ stopCamera();puenteV16Enviando=true;operatorFinish.disabled=true;
+ const respaldo=JSON.stringify({nonce:bridgeNonce,readings:registros});
+ try{sessionStorage.setItem(operatorHiddenBackup,respaldo);}catch(e){}
+ operatorStatus.textContent='Guardando '+registros.length+' serie(s) para CONFORT STOCK…';
+ try{
+  const result=await puenteV16Enviar(registros);
+  if(!result.ok||!result.saved)throw Error(result.error||'No se confirmó la recepción');
+  puenteV16Guardado=true;
+  operatorStatus.textContent='✓ Series guardadas y listas para CONFORT STOCK. Regresá al portal.';
+  operatorFinish.textContent='Volver a CONFORT STOCK';
+  operatorFinish.disabled=false;
+  // Acelerar si el navegador permite comunicación entre pestañas, sin depender de ella.
+  operatorPost('CONFORT_RESULT',{readings:registros});
+  try{window.opener?.focus();}catch(e){}
+  // Se deja la cámara visible si Chrome impide cerrar la pestaña.
+  // El portal recupera el lote al recuperar el foco.
+ }catch(err){
+  operatorStatus.textContent='No se confirmó el envío: '+err.message+'. Tocá nuevamente para reintentar o Copiar respaldo.';
+  operatorFinish.disabled=false;
+ }finally{puenteV16Enviando=false;}
+};
+
 loadPatterns();renderReads();if(!OPERATIVO)cloudInit();log('Motor V16 · modo operativo');
 })();
 </script>
