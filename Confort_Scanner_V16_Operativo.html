@@ -1,3 +1,289 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a425f">
+<title>CONFORT SCANNER V16 — Operativo</title>
+<style>
+:root{--blue:#0b4866;--blue2:#08364d;--ink:#173449;--muted:#5b7180;--line:#d8e3e9;--bg:#f2f6f8;--good:#157347;--warn:#99610c;--bad:#b1252b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}header{background:var(--blue);color:#fff;padding:17px max(16px,env(safe-area-inset-left));box-shadow:0 2px 10px #153a5024}.shell{max-width:800px;margin:auto}.top{display:flex;align-items:center;gap:13px}.snow{flex:0 0 auto;width:37px;height:37px}header strong{display:block;font-size:22px;letter-spacing:.02em}header small{opacity:.9}main{padding:13px 13px 55px}section{background:#fff;border:1px solid var(--line);border-radius:15px;margin:12px 0;padding:16px;box-shadow:0 2px 9px #17344906}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:12px 0 8px}label{display:block;font-weight:650;margin:10px 0 5px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:12px;border:1px solid #adbfcb;border-radius:10px;background:#fff;color:var(--ink)}button{min-height:43px;padding:10px 12px;background:white;border:1px solid #bfd0d9;color:var(--ink);border-radius:10px;font-weight:650;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.danger{color:var(--bad);border-color:#e9b5b5}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.buttons>*{flex:1 1 auto}.columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.note{font-size:13px;color:var(--muted)}.notice{background:#eef7fb;border:1px solid #cce2ef;padding:10px;border-radius:9px}.status{margin:8px 0;color:var(--muted);overflow-wrap:anywhere}.status.error{color:var(--bad);font-weight:650}.status.ok{color:var(--good)}#frame{background:#142c3a;position:relative;overflow:hidden;min-height:170px;border-radius:12px;outline:4px solid transparent;outline-offset:2px}#frame video{display:block;width:100%;max-height:370px;object-fit:contain}#frame:has(video:not([srcObject])){min-height:180px}#frame .guides{pointer-events:none;position:absolute;top:35%;height:30%;left:5%;right:5%;border:2px solid #fff9;border-radius:8px}#frame.good{outline-color:#199459}#frame.warn{outline-color:#d7a72f}#frame.bad{outline-color:#c83a44}#result{position:absolute;bottom:8px;left:8px;right:8px;text-align:center;padding:8px 6px;border-radius:8px;display:none;font-weight:750;overflow-wrap:anywhere;background:#e3f6ec;color:#165b39}#frame.good #result{display:block}#frame.warn #result{display:block;background:#fff2c8;color:#775106}#frame.bad #result{display:block;background:#ffe1e1;color:#9b1720}.pill{display:inline-block;background:#eef3f6;color:#345166;padding:4px 8px;border-radius:18px;font-size:12px;font-weight:650}.pill.good{background:#e1f3e8;color:#136839}.pill.warn{background:#ffefcf;color:#855c12}.pill.bad{background:#fbe3e4;color:#a12029}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summary div{padding:12px 6px;background:#f4f7f8;border-radius:10px;text-align:center}.summary strong{display:block;font-size:23px}.summary small{color:var(--muted);font-size:12px}#readings{list-style:none;margin:10px 0;padding:0;display:grid;gap:9px}#readings li{border:1px solid var(--line);border-radius:10px;padding:10px}#readings code{font-size:13px;word-break:break-all;white-space:pre-wrap}.entrytop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.entry-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.entry-actions button{min-height:33px;padding:5px 10px;font-size:13px}.entrymeta{color:var(--muted);font-size:12px}details{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}summary{font-weight:700;cursor:pointer}.learned{display:grid;gap:9px;margin:10px 0}.learned article{padding:10px;border:1px solid var(--line);border-radius:10px}.learned code{word-break:break-all}#zoomGroup{display:none;align-items:center;gap:10px}#zoomGroup input{flex:1}.hidden{display:none!important}.checkbox{display:flex;align-items:flex-start;gap:9px;font-weight:400}.checkbox input{width:auto;margin-top:4px}.footer-note{color:#607381;font-size:12px}#diag{font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6f8;padding:10px;border-radius:9px;max-height:160px;overflow:auto}hr{border:0;border-top:1px solid var(--line);margin:14px 0}@media(max-width:550px){.columns{grid-template-columns:1fr}.buttons>*{flex:1 1 45%}header strong{font-size:19px}}
+</style>
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js" defer></script>
+</head>
+<body>
+<header><div class="shell top"><svg class="snow" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 3v42M6 13l36 22M6 35l36-22M18 9l6 6 6-6M18 39l6-6 6 6M8 20l8-2-1-8M40 28l-8 2 1 8M15 38l1-8-8-2M33 10l-1 8 8 2"/></svg><div><strong>CONFORT SCANNER</strong><small>V16 · Operativo para CONFORT STOCK</small></div></div></header>
+<main class="shell">
+<section><div class="notice"><strong>Modo de pruebas.</strong> Esta cámara NO modifica el stock. Opcionalmente registra cada lectura en una planilla de PRUEBAS independiente. V15 sigue intacta.</div><div class="columns"><div><label for="brand">Marca del equipo</label><select id="brand"><option>TRANE</option><option>HISENSE</option><option>LG</option><option>MIDEA</option><option>HITACHI</option><option>YORK</option><option>SIAM</option><option>BGH</option><option>ELECTRA</option><option>OTRA</option></select></div><div><label for="unit">Tipo de unidad</label><select id="unit"><option value="UI">Evaporadora (UI)</option><option value="UE">Condensadora (UE)</option><option value="UNICA">Unidad con una serie</option></select></div></div><label for="scanMode">Qué detectar</label><select id="scanMode"><option value="serial">Series: validar formatos y descartar códigos comerciales</option><option value="all">Diagnóstico: mostrar TODOS los códigos detectados</option></select><p class="note">El modo diagnóstico sirve para identificar por qué una etiqueta no se acepta. No equivale a confirmar que sea una serie.</p></section>
+<section><h2>Registro automático en Google Sheets <small style="font-size:11px;color:#537286;font-weight:500">Sync 2 · 26/11</small></h2><p class="note">Configurá una vez la URL del receptor de pruebas. Desde entonces, cada lectura se envía sola. No necesitás exportar archivos ni tocar Guardar.</p><label for="cloudUrl">URL de aplicación web del registro de pruebas (/exec)</label><input id="cloudUrl" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" spellcheck="false"><div class="buttons"><button id="cloudConnect" class="primary">Conectar planilla y probar</button><button id="cloudRetry">Reintentar pendientes</button></div><p id="cloudStatus" class="status">Sin conectar a la planilla. La cámara sigue funcionando.</p><div class="summary"><div><strong id="cloudSaved">0</strong><small>Envíos confirmados</small></div><div><strong id="cloudPending">0</strong><small>Pendientes</small></div><div><strong id="cloudFailures">0</strong><small>Errores de envío</small></div></div><p class="note">La planilla confirma cada envío. Si no hay confirmación, queda pendiente para reintentar. Si el almacenamiento local del navegador está lleno, se mostrará una advertencia.</p></section>
+<section id="operatorPanel"><h2 id="operatorTitle">Conectando con CONFORT STOCK…</h2><p id="operatorDetail" class="note">Abrí esta cámara desde el portal.</p><p class="status" id="operatorStatus">Esperando la configuración de la operación.</p><div class="buttons"><button type="button" id="operatorFinish" class="primary" disabled>Confirmar lecturas y volver</button><button type="button" id="operatorBackup">Copiar respaldo</button><button type="button" id="operatorCancel">Cancelar escaneo</button></div></section>
+<section><h2>1. Cámara</h2><div id="frame"><video id="video" autoplay muted playsinline></video><div class="guides"></div><div id="result" role="status"></div></div><div class="buttons"><button id="start" class="primary">Iniciar cámara</button><button id="stop" disabled>Detener</button><button id="torch" disabled>Linterna</button></div><div id="zoomGroup"><label for="zoom">Zoom</label><input type="range" id="zoom" step="0.1" min="1" max="3" value="1"><span id="zoomVal">1×</span></div><div id="cameraStatus" class="status">Lista para iniciar. Permití el acceso a la cámara cuando Chrome lo solicite.</div><p id="motorStatus" class="note">Motores: cámara Android/Chrome y alternativa ZXing.</p></section>
+<section><h2>2. Carga manual y aprendizaje</h2><label for="manual">Número de serie exactamente como figura en S/N</label><input id="manual" type="text" inputmode="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Ejemplo: 2KK0U20300010715UJ70358"><div class="buttons"><button id="manualAdd" class="primary">Confirmar serie manual</button></div><p class="note">Si el formato es nuevo, te pediremos confirmación. Ese formato quedará aprendido <strong>en este navegador</strong> y registrado en la planilla si la sincronización está activa, para esta marca y este tipo de unidad. No alcanza para demostrar que otra etiqueta sea auténtica.</p><div id="manualStatus" class="status"></div></section>
+<section><h2>3. Resultados de la prueba</h2><div class="summary"><div><strong id="count">0</strong><small>Lecturas únicas</small></div><div><strong id="confirmed">0</strong><small>Series confirmadas</small></div><div><strong id="patterns">0</strong><small>Patrones aprendidos</small></div></div><ul id="readings"></ul><div class="buttons"><button id="exportCSV">Exportar lecturas CSV</button><button id="exportJSON">Respaldar formatos JSON</button><button id="resetRun" class="danger">Limpiar lecturas</button></div><details><summary>Formatos aprendidos y administración</summary><p class="note">Para reconocer una serie automáticamente, el patrón necesita coincidencia de posición entre letras y números. Se guarda un registro por marca y unidad, y se puede borrar o exportar. Un formato aprendido es provisional y debe verificarse con la etiqueta real.</p><div id="learned" class="learned"></div><label for="importFile">Restaurar formatos desde respaldo JSON</label><input type="file" id="importFile" accept=".json,application/json"><button id="clearPatterns" class="danger">Borrar todos los formatos aprendidos</button><p id="storageStatus" class="status"></p></details><details><summary>Diagnóstico técnico</summary><div id="diag">Sin eventos.</div></details></section><p class="footer-note">Motor V16 operativo · Las lecturas se transfieren al portal, pero el stock solo cambia al confirmar la operación en CONFORT STOCK.</p>
+</main>
+<script>
+(()=>{'use strict';
+const el=id=>document.getElementById(id);const OPERATIVO=true; let bridgeConfig=null; let bridgePending=null; const bridgeNonce=new URLSearchParams(location.hash.slice(1)).get('n')||'';
+const state={active:false,busy:false,stream:null,track:null,native:null,zxing:null,loop:null,token:0,lastCandidate:'',lastCandidateAt:0,lastNewAt:0,reads:[],seen:new Set(),patternStore:[],storageOK:true,torch:false,audio:null,flashTimer:null,errors:[],diagAt:0};
+const STORAGE_KEY='CONFORT_SCANNER_V16_PATTERNS_1';
+
+// === REGISTRO INDEPENDIENTE EN GOOGLE SHEETS (sin alterar el escáner) ===
+const CLOUD_URL_KEY='CONFORT_SCANNER_V16_SHEET_URL_1';
+const CLOUD_QUEUE_KEY='CONFORT_SCANNER_V16_QUEUE_1';
+const CLOUD_STATS_KEY='CONFORT_SCANNER_V16_STATS_1';
+let cloudUrl='', cloudQueue=[], cloudSending=null, cloudTimer=null, cloudSaved=0,cloudFailures=0;
+function cloudValidUrl(s){try{const u=new URL(s);return u.protocol==='https:'&&u.hostname==='script.google.com'&&u.pathname.startsWith('/macros/s/')&&u.pathname.endsWith('/exec')?u.toString():'';}catch{return '';}}
+function cloudStore(){try{localStorage.setItem(CLOUD_QUEUE_KEY,JSON.stringify(cloudQueue));return true;}catch(e){el('cloudStatus').textContent='ATENCIÓN: el navegador no pudo conservar las lecturas pendientes ('+e.name+'). Comprobá tu espacio local.';el('cloudStatus').className='status error';return false;}}
+function cloudRender(message){el('cloudSaved').textContent=String(cloudSaved);el('cloudPending').textContent=String(cloudQueue.length);el('cloudFailures').textContent=String(cloudFailures);if(message){el('cloudStatus').textContent=message;el('cloudStatus').className='status'+(/ERROR|ATENCIÓN|no confirmado/i.test(message)?' error':'');}}
+function cloudId(){return (crypto.randomUUID?.()||('v16-'+Date.now()+'-'+Math.random().toString(36).slice(2))) .replace(/[^a-zA-Z0-9_.:-]/g,'');}
+function queueCloud(type,item={}){
+ if(OPERATIVO||!cloudUrl)return;
+ const event={id:cloudId(),type,brand:String(item.brand||el('brand').value),unit:String(item.unit||el('unit').value),at:new Date().toISOString(),item:{...item}};
+ cloudQueue.push(event);
+ if(cloudQueue.length>1500){cloudRender('ATENCIÓN: 1500 registros pendientes. Verificá la conexión con Google Sheets.');}
+ cloudStore();cloudRender();cloudSend();
+}
+let cloudScript=null,cloudFrame=null,cloudForm=null,cloudFallbackTimer=null;
+const CLOUD_WAIT_MS=25000;
+function cloudScriptClear(){
+ if(cloudScript){cloudScript.remove();cloudScript=null;}
+ if(cloudForm){cloudForm.remove();cloudForm=null;}
+ if(cloudFrame){cloudFrame.remove();cloudFrame=null;}
+ clearTimeout(cloudTimer);clearTimeout(cloudFallbackTimer);
+ cloudTimer=null;cloudFallbackTimer=null;
+}
+function cloudFinish(d,via){
+ if(!cloudSending||!d||d.type!=='CONFORT_V16_SHEET_ACK'||String(d.id)!==String(cloudSending.id))return;
+ const id=cloudSending.id;
+ cloudScriptClear();
+ cloudSending=null;
+ if(d.ok){
+  cloudQueue=cloudQueue.filter(e=>e.id!==id);
+  cloudSaved++;
+  try{localStorage.setItem(CLOUD_STATS_KEY,String(cloudSaved));}catch{}
+  cloudStore();
+  cloudRender('✓ Confirmado por Google Sheets ('+via+').');
+  setTimeout(cloudSend,350);
+ }else{
+  cloudFailures++;
+  cloudRender('ERROR devuelto por Sheets: '+String(d.error||'No se pudo guardar').slice(0,170));
+ }
+}
+window.__scv16JsonpAck=d=>cloudFinish(d,'JSONP');
+window.addEventListener('message',e=>{
+ if(!cloudSending||!e.data||e.data.type!=='CONFORT_V16_SHEET_ACK')return;
+ try{const u=new URL(e.origin);if(u.protocol!=='https:'||!(u.hostname==='script.google.com'||u.hostname.endsWith('.googleusercontent.com')))return;}catch{return;}
+ cloudFinish(e.data,'POST');
+});
+function cloudPostFallback(evt){
+ if(!cloudSending||cloudSending.id!==evt.id||cloudFrame)return;
+ try{
+  const frame=document.createElement('iframe');
+  frame.name='scv16_fallback_'+Date.now();
+  frame.setAttribute('title','Confirmación de registro de pruebas');
+  frame.style.cssText='position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;';
+  const form=document.createElement('form');
+  form.method='POST';form.action=cloudUrl;form.target=frame.name;
+  form.style.display='none';
+  const input=document.createElement('input');input.name='payload';input.value=JSON.stringify(evt);
+  form.appendChild(input);
+  document.body.append(frame,form);
+  cloudFrame=frame;cloudForm=form;
+  form.submit();
+  cloudRender('Esperando confirmación: comprobación alternativa en curso…');
+ }catch(err){cloudRender('Sin confirmación directa ni alternativa: '+err.message);}
+}
+function cloudSend(){
+ if(!cloudUrl||!cloudQueue.length||cloudSending)return;
+ const evt=cloudQueue[0];cloudSending=evt;
+ let url;
+ try{
+  url=new URL(cloudUrl);
+  url.searchParams.set('payload',JSON.stringify(evt));
+  url.searchParams.set('callback','__scv16JsonpAck');
+  url.searchParams.set('_',String(Date.now()));
+  if(url.toString().length>6500)throw Error('Registro demasiado grande para el envío directo.');
+ }catch(err){cloudSending=null;cloudFailures++;cloudRender('ERROR: '+err.message);return;}
+ const script=document.createElement('script');
+ cloudScript=script;
+ script.async=true;
+ script.src=url.toString();
+ script.onerror=()=>{
+  if(cloudSending?.id===evt.id)cloudPostFallback(evt);
+ };
+ cloudFallbackTimer=setTimeout(()=>{if(cloudSending?.id===evt.id)cloudPostFallback(evt);},8000);
+ cloudTimer=setTimeout(()=>{
+  if(cloudSending?.id!==evt.id)return;
+  cloudScriptClear();cloudSending=null;cloudFailures++;
+  cloudRender('ERROR: Google Sheets no confirmó este envío por ninguna de las dos vías. Se conserva pendiente; no es necesario volver a escanear.');
+ },CLOUD_WAIT_MS);
+ document.head.appendChild(script);
+ cloudRender('Enviando registro a Google Sheets…');
+}
+function cloudStart(){
+ const proposed=el('cloudUrl').value.trim();
+ const normalized=cloudValidUrl(proposed);
+ if(!normalized){cloudRender('ERROR: la dirección debe empezar por https://script.google.com/macros/s/ y terminar en /exec. No pegues el enlace de Sheets.');return;}
+ cloudUrl=normalized;
+ el('cloudUrl').value=normalized;
+ try{localStorage.setItem(CLOUD_URL_KEY,cloudUrl);}catch{}
+ if(cloudQueue.length){cloudRender('Dirección guardada. Primero se envían los '+cloudQueue.length+' registros pendientes. No se agrega otra prueba.');cloudSend();return;}
+ cloudRender('Conectando: enviando un único registro de prueba…');
+ queueCloud('PRUEBA',{brand:el('brand').value,unit:el('unit').value,code:'PRUEBA_CONEXION',source:'SISTEMA',note:'Conexión inicial de laboratorio'});
+}
+function cloudInit(){
+ try{
+  cloudUrl=cloudValidUrl(localStorage.getItem(CLOUD_URL_KEY)||'');
+  cloudQueue=JSON.parse(localStorage.getItem(CLOUD_QUEUE_KEY)||'[]');
+  if(!Array.isArray(cloudQueue))cloudQueue=[];
+  cloudSaved=Number(localStorage.getItem(CLOUD_STATS_KEY)||0)||0;
+ }catch{cloudQueue=[];}
+ el('cloudUrl').value=cloudUrl;
+ cloudRender(cloudUrl?'Receptor configurado. Se intentará sincronizar lo pendiente.':'Sin receptor configurado: pegá la URL de Apps Script /exec.');
+ el('cloudConnect').onclick=cloudStart;
+ el('cloudRetry').onclick=()=>{
+  const typed=cloudValidUrl(el('cloudUrl').value.trim());
+  if(typed&&typed!==cloudUrl){cloudStart();return;}
+  if(!cloudUrl){cloudRender('Primero ingresá y conectá la URL de Apps Script /exec.');return;}
+  if(cloudSending){cloudRender('Hay un envío en curso. Esperá su confirmación.');return;}
+  if(!cloudQueue.length){cloudRender('No hay registros pendientes.');return;}
+  cloudSend();
+ };
+ window.addEventListener('online',cloudSend);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)cloudSend();});
+ setInterval(()=>{if(!cloudSending)cloudSend();},20000);
+ cloudSend();
+}
+// === FIN REGISTRO AUTOMÁTICO ===
+
+const known={TRANE:[/^\d{4}HA\d{5}[A-Z]$/,/^\d{6}(?:IDU|ODU)\d+$/,/^\d{4}[A-Z]\d{4}[A-Z]$/],HISENSE:[/^(?:2KK|1KA)[A-Z0-9]{20}$/],MIDEA:[/^\d{4}A\d{5}$/],LG:[/^\d{3}[A-Z]{4}[A-Z0-9]{2}\d{3}$/],HITACHI:[/^RF\d{5}(?:UI|UE)\d{6}$/],YORK:[/^10040\d{13}$/],BGH:[/^\d{13}[A-Z]{2}\d{6}$/],SIAM:[/^\d{6}C4[A-Z]{3}\d{5}[A-Z]\d{6}$/]};
+function norm(v){return String(v||'').trim().replace(/^\]C[01]/i,'').toUpperCase().replace(/\s+/g,'');}
+function mask(v){return [...v].map(c=>/[0-9]/.test(c)?'9':/[A-Z]/.test(c)?'A':c).join('');}
+function isSerialCandidate(v){return /^[A-Z0-9][A-Z0-9._/-]{5,79}$/.test(v);}
+function isProductCode(v){return /^\d{8}$/.test(v)||/^\d{12,14}$/.test(v);}
+function goodMask(m){return typeof m==='string'&&/^[9A./_-]{6,80}$/.test(m)&&/[9A]/.test(m);}
+function matchesMask(v,m){return v.length===m.length&&[...m].every((c,i)=>c==='9'?/[0-9]/.test(v[i]):c==='A'?/[A-Z]/.test(v[i]):v[i]===c);}
+function allPatterns(){return state.patternStore.filter(p=>p.brand===el('brand').value&&p.unit===el('unit').value&&p.enabled!==false);}
+function knownMatch(v){return (known[el('brand').value]||[]).some(re=>re.test(v));}
+function learnedMatch(v){return (Array.isArray(bridgeConfig?.learned?.[el('unit').value])&&bridgeConfig.learned[el('unit').value].some(m=>matchesMask(v,m)))||allPatterns().some(p=>matchesMask(v,p.mask));}
+function classify(v,manual){if(bridgeConfig&&bridgeConfig.operation!=='INGRESO'&&(bridgeConfig.expected||[]).some(x=>norm(x.serie)===v))return {kind:'known',note:'Serie existente autorizada para esta operación'};if(!v||!isSerialCandidate(v))return {kind:'invalid',note:'Código corto, demasiado largo o con caracteres no compatibles'};if(isProductCode(v))return {kind:'product',note:'Posible EAN/UPC o código comercial. No es una serie individual confirmada'};if(knownMatch(v))return {kind:'known',note:'Coincide con un formato conocido de la marca'};if(learnedMatch(v))return {kind:'learned',note:'Coincide con un formato aprendido para esta marca y unidad'};return {kind:manual?'new':'candidate',note:'Formato desconocido: verificá S/N y confirmalo manualmente'};}
+function log(msg){const line=new Date().toLocaleTimeString('es-AR')+' · '+msg;state.errors.unshift(line);state.errors=state.errors.slice(0,20);el('diag').textContent=state.errors.join('\n');}
+function updatePatternCount(){el('patterns').textContent=state.patternStore.length;}
+function savePatterns(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state.patternStore));state.storageOK=true;el('storageStatus').textContent='Patrones guardados en este navegador. Exportá un respaldo JSON antes de borrar datos del sitio.';}catch(e){state.storageOK=false;el('storageStatus').textContent='No se pudo guardar en este navegador ('+e.name+'). Exportá los formatos en JSON para conservarlos.';log('Almacenamiento del navegador: '+e.message);}}
+function loadPatterns(){try{const raw=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');state.patternStore=Array.isArray(raw)?raw.filter(validPattern).slice(0,500):[];}catch(e){state.patternStore=[];log('No se pudieron recuperar patrones locales: '+e.message);}updatePatternCount();renderPatterns();}
+function validPattern(p){return p&&typeof p.brand==='string'&&p.brand.length<=40&&['UI','UE','UNICA'].includes(p.unit)&&goodMask(p.mask)&&typeof p.enabled!=='string';}
+function learn(v,source){const p={brand:el('brand').value,unit:el('unit').value,mask:mask(v),enabled:true,source:source||'MANUAL',sample:v.slice(0,5)+'…'+v.slice(-4),created:new Date().toISOString()};if(!goodMask(p.mask))return false;if(state.patternStore.some(x=>x.brand===p.brand&&x.unit===p.unit&&x.mask===p.mask))return false;state.patternStore.push(p);queueCloud('PATRON',{...p,action:'APRENDIDO'});savePatterns();updatePatternCount();renderPatterns();return true;}
+function renderPatterns(){const root=el('learned');root.replaceChildren();if(!state.patternStore.length){const p=document.createElement('p');p.textContent='Todavía no hay patrones aprendidos.';p.className='note';root.append(p);return;}state.patternStore.forEach((p,i)=>{const art=document.createElement('article');const top=document.createElement('div');top.className='entrytop';const desc=document.createElement('strong');desc.textContent=p.brand+' · '+p.unit;const code=document.createElement('code');code.textContent=p.mask;top.append(desc,code);const small=document.createElement('div');small.className='entrymeta';small.textContent='Ejemplo '+(p.sample||'—')+' · '+new Date(p.created||Date.now()).toLocaleDateString('es-AR');const actions=document.createElement('div');actions.className='entry-actions';const tog=document.createElement('button');tog.textContent=p.enabled===false?'Activar':'Desactivar';tog.onclick=()=>{p.enabled=p.enabled===false;queueCloud('PATRON',{...p,action:p.enabled?'ACTIVADO':'DESACTIVADO'});savePatterns();renderPatterns();};const del=document.createElement('button');del.textContent='Eliminar';del.className='danger';del.onclick=()=>{if(confirm('¿Eliminar este patrón aprendido?')){state.patternStore.splice(i,1);queueCloud('PATRON',{...p,action:'ELIMINADO'});savePatterns();updatePatternCount();renderPatterns();}};actions.append(tog,del);art.append(top,small,actions);root.append(art);});}
+function badgeFor(r){if(r.source==='MANUAL')return ['Confirmada manualmente','good'];if(r.class==='known')return ['Serie · formato conocido','good'];if(r.class==='learned')return ['Serie · formato aprendido','good'];if(r.class==='candidate')return ['Formato no confirmado','warn'];if(r.class==='product')return ['Código comercial posible','bad'];return ['Código diagnóstico','warn'];}
+function renderReads(){const root=el('readings');root.replaceChildren();el('count').textContent=state.reads.length;el('confirmed').textContent=state.reads.filter(r=>r.confirmed).length;if(!state.reads.length){const li=document.createElement('li');li.className='note';li.textContent='Todavía no hay lecturas.';root.append(li);return;}state.reads.slice().reverse().forEach(r=>{const li=document.createElement('li');const top=document.createElement('div');top.className='entrytop';const code=document.createElement('code');code.textContent=r.code;const [label,col]=badgeFor(r);const badge=document.createElement('span');badge.className='pill '+col;badge.textContent=label;top.append(code,badge);const meta=document.createElement('div');meta.className='entrymeta';meta.textContent=r.brand+' · '+r.unit+' · '+r.source+' · '+r.symbol+' · '+new Date(r.at).toLocaleTimeString('es-AR');const actions=document.createElement('div');actions.className='entry-actions';if(!r.confirmed){const b=document.createElement('button');b.textContent='Es S/N: confirmar';b.onclick=()=>confirmRead(r);actions.append(b);}const remove=document.createElement('button');remove.textContent='Quitar';remove.onclick=()=>{state.reads=state.reads.filter(x=>x!==r);state.seen.delete(r.code);renderReads();};actions.append(remove);li.append(top,meta,actions);root.append(li);});}
+function currentMode(){return el('scanMode').value;}
+function showFeedback(type,msg){const f=el('frame');f.classList.remove('good','warn','bad');f.classList.add(type);el('result').textContent=msg;clearTimeout(state.flashTimer);state.flashTimer=setTimeout(()=>f.classList.remove('good','warn','bad'),1700);}
+function beep(){try{if(!state.audio)state.audio=new (window.AudioContext||window.webkitAudioContext)();state.audio.resume().catch(()=>{});const o=state.audio.createOscillator(),g=state.audio.createGain();o.frequency.value=850;g.gain.value=.07;o.connect(g);g.connect(state.audio.destination);o.start();o.stop(state.audio.currentTime+.085);}catch(e){}try{navigator.vibrate?.(65);}catch(e){}}
+let cloudObserved=new Set();
+function cloudObserve(type,code,source,symbol,note){const key=type+'|'+el('brand').value+'|'+el('unit').value+'|'+code;if(cloudObserved.has(key))return;cloudObserved.add(key);queueCloud(type,{code,source,symbol,class:type,confirmed:false,note});}
+function accept(raw,source,symbol='DESCONOCIDO'){const code=norm(raw);if(!code)return;const t=performance.now();if(code===state.lastCandidate&&t-state.lastCandidateAt<1200)return;state.lastCandidate=code;state.lastCandidateAt=t;if(state.seen.has(code)){cloudObserve('DUPLICADA',code,source,symbol,'Ya leída en esta sesión');showFeedback('warn','YA LEÍDO · '+code);return;}if(bridgeConfig){
+  if((bridgeConfig.existing||[]).some(x=>norm(x)===code)){showFeedback('warn','Serie ya incorporada en el portal · '+code);return;}
+  const isIn=bridgeConfig.operation==='INGRESO';
+  const expected=Array.isArray(bridgeConfig.expected)?bridgeConfig.expected:[];
+  if(!isIn){const hit=expected.find(x=>norm(x.serie)===code);if(!hit||(bridgeConfig.operation==='EGRESO'&&hit.tipoUnidad!==el('unit').value)){showFeedback('bad','Serie no registrada para esta operación · '+code);return;}if(bridgeConfig.operation==='INVENTARIO')el('unit').value=hit.tipoUnidad;}
+  const existingCount=(bridgeConfig.initial?.[el('unit').value]||0);
+  const currentCount=state.reads.filter(x=>x.confirmed).length;
+  if(bridgeConfig.goal!=null&&existingCount+currentCount>=Number(bridgeConfig.goal)){showFeedback('warn','Cantidad completa para esta unidad');return;}
+}
+const result=classify(code,source==='MANUAL');if(currentMode()==='serial'&&source!=='MANUAL'&&result.kind==='product'){cloudObserve('DESCARTADA',code,source,symbol,'Código comercial posible');showFeedback('bad','Código comercial posible · '+code);el('cameraStatus').textContent='Se detectó un código comercial. Apuntá al código marcado S/N o SERIAL NUMBER.';return;}if(currentMode()==='serial'&&source!=='MANUAL'&&result.kind==='invalid'){cloudObserve('DESCARTADA',code,source,symbol,'Código no compatible');showFeedback('bad','Lectura no compatible · '+code);return;}let confirmed=source==='MANUAL'||result.kind==='known'||result.kind==='learned';const item={code,brand:el('brand').value,unit:el('unit').value,source,symbol,at:new Date().toISOString(),class:result.kind,confirmed};state.reads.push(item);state.seen.add(code);queueCloud('LECTURA',item);renderReads();showFeedback(confirmed?'good':'warn',confirmed?'✓ SERIE REGISTRADA · '+code:'? REVISAR S/N · '+code);beep();el('cameraStatus').textContent=result.note;if(!OPERATIVO&&source==='MANUAL'&&result.kind==='new')learn(code,'MANUAL');}
+function confirmRead(r){if(r.confirmed)return;const msg='¿Confirmás que '+r.code+' es el número de serie individual (S/N) de una unidad '+r.unit+' '+r.brand+'?\n\nNo confirmes modelo, EAN/UPC ni lote.';if(!confirm(msg))return;r.confirmed=true;r.class='new';queueCloud('CONFIRMACION',r);if(!OPERATIVO&&!knownMatchFor(r)&&!state.patternStore.some(p=>p.brand===r.brand&&p.unit===r.unit&&matchesMask(r.code,p.mask))){const savedBrand=el('brand').value,savedUnit=el('unit').value;el('brand').value=r.brand;el('unit').value=r.unit;learn(r.code,'CONFIRMADO');el('brand').value=savedBrand;el('unit').value=savedUnit;}renderReads();}
+function knownMatchFor(r){return (known[r.brand]||[]).some(re=>re.test(r.code));}
+const video=el('video');let canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+function getFormats(){return ['code_128','code_39','code_93','ean_13','ean_8','upc_a','itf','qr_code','data_matrix','pdf417'];}
+function configureZ(){if(!window.ZXing)return null;try{const Z=window.ZXing,reader=new Z.MultiFormatReader(),h=new Map();h.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.CODE_93,Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.ITF,Z.BarcodeFormat.QR_CODE]);h.set(Z.DecodeHintType.TRY_HARDER,true);reader.setHints(h);return reader;}catch(e){log('ZXing: '+e.message);return null;}}
+function stopCamera(){clearTimeout(state.loop);state.token++;state.active=false;if(state.stream){state.stream.getTracks().forEach(t=>t.stop());state.stream=null;}state.track=null;video.srcObject=null;el('start').disabled=false;el('stop').disabled=true;el('torch').disabled=true;el('torch').textContent='Linterna';el('zoomGroup').style.display='none';state.torch=false;}
+async function startCamera(){if(state.active||state.busy)return;state.busy=true;el('start').disabled=true;el('cameraStatus').className='status';el('cameraStatus').textContent='Solicitando permiso de cámara…';try{if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)throw Error('Abrí la página desde HTTPS en Chrome y permití la cámara.');state.zxing=configureZ();state.native=null;if('BarcodeDetector' in window){try{const formats=(await BarcodeDetector.getSupportedFormats()).filter(f=>getFormats().includes(f));if(formats.length)state.native=new BarcodeDetector({formats});}catch(e){log('BarcodeDetector: '+e.message);}}if(!state.native&&!state.zxing)throw Error('No se cargó ningún motor lector. Verificá Internet, recargá la página e intentá de nuevo.');state.stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}}});state.track=state.stream.getVideoTracks()[0];video.srcObject=state.stream;await video.play();const caps=state.track.getCapabilities?.()||{};el('torch').disabled=!caps.torch;if(caps.zoom){const z=el('zoom');z.min=caps.zoom.min;z.max=Math.min(caps.zoom.max,5);z.step=caps.zoom.step||.1;z.value=state.track.getSettings()?.zoom||caps.zoom.min;el('zoomVal').textContent=z.value+'×';el('zoomGroup').style.display='flex';}state.active=true;state.lastNewAt=performance.now();el('stop').disabled=false;el('cameraStatus').textContent='Cámara activa. Centrá el S/N en la guía.';el('motorStatus').textContent='Motor: '+(state.native?'Nativo Android/Chrome':'ZXing')+(state.zxing?' + respaldo ZXing':'');const token=++state.token;state.loop=setTimeout(()=>scanFrame(token),50);}catch(e){log('No se pudo iniciar: '+e.message);stopCamera();el('cameraStatus').className='status error';el('cameraStatus').textContent='No se pudo iniciar: '+e.message;}finally{state.busy=false;el('start').disabled=state.active;}}
+let frameIndex=0;
+async function scanFrame(token){if(!state.active||token!==state.token)return;const started=performance.now();try{if(video.readyState<2||!video.videoWidth)return;const w=video.videoWidth,h=video.videoHeight,phase=frameIndex++%6,wide=(phase===5||performance.now()-state.lastNewAt>2500);const cutH=Math.round(h*(wide?.75:.42));const startY=Math.round((h-cutH)/2),cutW=Math.round(w*.98),startX=Math.round((w-cutW)/2);const pad=16;canvas.width=cutW+pad*2;canvas.height=cutH;ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(video,startX,startY,cutW,cutH,pad,0,cutW,cutH);const useZ=Boolean(state.zxing&&(!state.native||phase===4||phase===5));if(useZ){const Z=window.ZXing,im=ctx.getImageData(0,0,canvas.width,canvas.height),grey=new Uint8ClampedArray(canvas.width*canvas.height);for(let i=0,j=0;j<grey.length;i+=4,j++){let b=(im.data[i]*77+im.data[i+1]*150+im.data[i+2]*29)>>8;grey[j]=wide?Math.max(0,Math.min(255,(b-128)*1.4+128)):b;}try{const source=new Z.RGBLuminanceSource(grey,canvas.width,canvas.height),hit=state.zxing.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(source)));if(hit){accept(hit.getText(),'CAMARA','ZXing '+String(hit.getBarcodeFormat?.()||''));state.lastNewAt=performance.now();}}catch(e){}}else if(state.native){const hits=await state.native.detect(canvas);if(state.active&&token===state.token)for(const h of hits){accept(h.rawValue,'CAMARA',h.format);state.lastNewAt=performance.now();}}}catch(e){if(performance.now()-state.diagAt>8000){state.diagAt=performance.now();log('Cuadro de cámara: '+e.message);}}finally{if(state.active&&token===state.token)state.loop=setTimeout(()=>scanFrame(token),Math.max(30,110-(performance.now()-started)));}}
+function saveBlob(name,txt,type){const blob=new Blob([txt],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+function csvQ(s){return '"'+String(s??'').replaceAll('"','""')+'"';}
+el('start').onclick=startCamera;el('stop').onclick=()=>{stopCamera();el('cameraStatus').textContent='Cámara detenida.';};el('torch').onclick=async()=>{if(!state.track)return;try{await state.track.applyConstraints({advanced:[{torch:!state.torch}]});state.torch=!state.torch;el('torch').textContent=state.torch?'Apagar luz':'Linterna';}catch(e){el('cameraStatus').textContent='Linterna no disponible para este dispositivo.';}};el('zoom').oninput=async()=>{if(!state.track)return;try{const z=Number(el('zoom').value);await state.track.applyConstraints({advanced:[{zoom:z}]});el('zoomVal').textContent=z.toFixed(1)+'×';}catch(e){}};
+el('manualAdd').onclick=()=>{const code=norm(el('manual').value);if(!isSerialCandidate(code)||isProductCode(code)){el('manualStatus').textContent='La serie no tiene un formato válido o parece un código comercial EAN/UPC. Revisá el S/N.';return;}if(state.seen.has(code)){el('manualStatus').textContent='Esa serie ya está en la lista.';return;}const kind=classify(code,true).kind;const promptText='¿Confirmás que '+code+' es el número de serie individual S/N de '+el('brand').value+' ('+el('unit').value+')?'+(kind==='new'?'\n\nSu formato se aprenderá para esta marca y unidad en este navegador.':'');if(!confirm(promptText))return;accept(code,'MANUAL','Carga manual');el('manual').value='';el('manualStatus').textContent='Serie incorporada. '+(kind==='new'?'Formato nuevo aprendido localmente.':'Formato ya conocido.');};el('manual').onkeydown=e=>{if(e.key==='Enter')el('manualAdd').click();};
+el('exportCSV').onclick=()=>{const head=['fecha_hora','marca','unidad','numero_serie','origen','simbologia','estado','confirmada'],data=state.reads.map(r=>[r.at,r.brand,r.unit,r.code,r.source,r.symbol,r.class,r.confirmed].map(csvQ).join(','));saveBlob('CONFORT_SCANNER_V16_lecturas.csv','\uFEFF'+[head.map(csvQ).join(','),...data].join('\r\n'),'text/csv;charset=utf-8');};el('exportJSON').onclick=()=>saveBlob('CONFORT_SCANNER_V16_patrones.json',JSON.stringify({version:1,exported:new Date().toISOString(),patterns:state.patternStore},null,2),'application/json');el('resetRun').onclick=()=>{if(!confirm('¿Borrar las lecturas de esta prueba? Los patrones aprendidos se conservan.'))return;state.reads=[];state.seen.clear();renderReads();};el('clearPatterns').onclick=()=>{if(!confirm('¿Borrar TODOS los formatos aprendidos en este navegador? Exportá un respaldo si querés conservarlos.'))return;state.patternStore=[];savePatterns();updatePatternCount();renderPatterns();};el('importFile').onchange=async()=>{const f=el('importFile').files?.[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.patterns)||d.patterns.length>500||d.patterns.some(p=>!validPattern(p)))throw Error('El archivo no contiene formatos compatibles.');if(!confirm('¿Importar '+d.patterns.length+' formatos al laboratorio?'))return;const map=new Map(state.patternStore.map(p=>[p.brand+'|'+p.unit+'|'+p.mask,p]));d.patterns.forEach(p=>map.set(p.brand+'|'+p.unit+'|'+p.mask,p));state.patternStore=[...map.values()];savePatterns();updatePatternCount();renderPatterns();el('storageStatus').textContent='Formatos importados correctamente.';}catch(e){el('storageStatus').textContent='No se pudo importar: '+e.message;}el('importFile').value='';};
+window.addEventListener('pagehide',stopCamera);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.active){stopCamera();el('cameraStatus').textContent='Cámara pausada al salir de la pestaña. Tocá Iniciar cámara para continuar.';}});
+
+// === V16 OPERATIVO: puente seguro hacia CONFORT STOCK ===
+const operatorPanel=el('operatorPanel');
+const operatorStatus=el('operatorStatus');
+const operatorFinish=el('operatorFinish');
+const operatorOriginal=el('cloudUrl').closest('section');
+const operatorSetup=el('brand').closest('section');
+const operatorHiddenBackup='CONFORT_V16_OPERADOR_PENDIENTE';
+operatorOriginal.hidden=true;
+operatorSetup.hidden=true;
+el('manual').closest('section').querySelector('p.note').textContent='Serie manual: confirmá el S/N real de la etiqueta. Los formatos nuevos solo se guardan en el stock después de confirmar el ingreso.';
+const configHostOk=origin=>{try{const u=new URL(origin);return u.protocol==='https:'&&(u.hostname==='script.google.com'||u.hostname.endsWith('.googleusercontent.com'));}catch{return false;}};
+let operatorOrigin='', operatorSending=false,operatorAck=false,operatorRetry=null;
+function operatorPost(type,payload={}){if(window.opener&&operatorOrigin)window.opener.postMessage({type,nonce:bridgeNonce,...payload},operatorOrigin);}
+function operatorProgress(){if(!bridgeConfig)return;const initial=Number(bridgeConfig.initial?.[bridgeConfig.unit]||0);const got=state.reads.filter(x=>x.confirmed).length;const need=bridgeConfig.goal;
+ const unconfirmed=state.reads.filter(x=>!x.confirmed).length;
+ operatorStatus.textContent=`Series confirmadas: ${got}${need!=null?' / '+Math.max(0,Number(need)-initial):''}`+(unconfirmed?' · '+unconfirmed+' lectura(s) sin confirmar (no se transferirán)':'');
+ operatorFinish.disabled=operatorSending||(bridgeConfig.operation!=='INVENTARIO'&&got===0);}
+const originalRenderReads=renderReads;
+renderReads=function(){originalRenderReads();operatorProgress();};
+const originalConfirmRead=confirmRead;
+confirmRead=function(r){originalConfirmRead(r);operatorProgress();};
+function operatorReadings(){return state.reads.filter(r=>r.confirmed).map(r=>({serie:r.code,tipoUnidad:r.unit,metodo:r.source==='MANUAL'?'MANUAL':'CAMARA'}));}
+let operatorSend=function(){if(!operatorSending||operatorAck||!bridgeConfig)return;operatorPost('CONFORT_RESULT',{readings:operatorReadings()});};
+function operatorStopRetry(){clearInterval(operatorRetry);operatorRetry=null;}
+window.addEventListener('message',e=>{
+ if(!bridgeNonce||e.source!==window.opener||!configHostOk(e.origin)||e.data?.nonce!==bridgeNonce)return;
+ if(e.data.type==='CONFORT_CONFIG'&&!bridgeConfig){
+  if(!['INGRESO','EGRESO','INVENTARIO'].includes(e.data?.config?.operation))return;
+  operatorOrigin=e.origin;
+  bridgeConfig=e.data.config;
+  if(!['UI','UE'].includes(bridgeConfig.unit)&&bridgeConfig.operation!=='INVENTARIO'){operatorStatus.textContent='Unidad faltante o inválida en el portal.';return;}
+  el('brand').value=String(bridgeConfig.brand||'OTRA').toUpperCase();
+  if(![...el('brand').options].some(x=>x.value===el('brand').value))el('brand').value='OTRA';
+  el('unit').value=bridgeConfig.unit==='UE'?'UE':'UI';
+  el('scanMode').value='serial';
+  operatorPanel.querySelector('#operatorTitle').textContent=bridgeConfig.operation==='INGRESO'?'Ingreso de mercadería':bridgeConfig.operation==='EGRESO'?'Registrar entrega':'Inventario físico';
+  el('operatorDetail').textContent=String(bridgeConfig.detail||'')+' · '+(bridgeConfig.unit==='UE'?'Condensadoras':'Evaporadoras');
+  el('manualAdd').disabled=false;
+  operatorProgress();
+  if(document.visibilityState==='visible')startCamera();
+  return;
+ }
+ if(!bridgeConfig)return;
+ if(e.data.type==='CONFORT_LEARNED'&&e.data.learned){
+  const learned=e.data.learned;
+  bridgeConfig.learned={UI:Array.isArray(learned.UI)?learned.UI.filter(x=>/^[9A]{8,40}$/.test(x)):[],UE:Array.isArray(learned.UE)?learned.UE.filter(x=>/^[9A]{8,40}$/.test(x)):[]};
+ }
+ if(e.data.type==='CONFORT_REQUEST_RESULT'&&operatorSending&&!operatorAck){operatorSend();return;}
+ if(e.data.type==='CONFORT_ACK'){
+  operatorAck=true;operatorStopRetry();operatorSending=false;
+  try{sessionStorage.removeItem(operatorHiddenBackup);}catch{}
+  operatorStatus.textContent='Lecturas recibidas por CONFORT STOCK. Volvé a la pestaña del portal.';
+  operatorFinish.disabled=true;stopCamera();
+  try{window.opener.focus();}catch{};
+  window.close();
+ }
+ if(e.data.type==='CONFORT_ERROR'){
+  operatorSending=false;operatorStopRetry();operatorStatus.textContent='El portal rechazó las lecturas: '+String(e.data.message||'Revisá los datos.');operatorFinish.disabled=false;
+ }
+});
+el('operatorBackup').onclick=()=>{
+ if(!bridgeConfig)return;
+ const text=JSON.stringify({nonce:bridgeNonce,readings:operatorReadings()});
+ navigator.clipboard?.writeText(text).then(()=>operatorStatus.textContent='Respaldo copiado. Podés recuperarlo en CONFORT STOCK.').catch(()=>prompt('Copiá el respaldo completo:',text))||prompt('Copiá el respaldo completo:',text);
+};
+el('operatorCancel').onclick=()=>{
+ if(operatorSending){operatorStatus.textContent='Esperá la confirmación o copiá el respaldo antes de salir.';return;}
+ if(state.reads.length&&!confirm('¿Descartar estas lecturas de la sesión?'))return;
+ stopCamera();operatorPost('CONFORT_CANCEL');window.close();
+};
+if(!bridgeNonce||!window.opener){operatorStatus.textContent='Esta versión se abre exclusivamente desde CONFORT STOCK. Para ensayos independientes usá V16 Pruebas.';el('operatorCancel').disabled=true;}
+else{
+ let readyTries=0;const ready=()=>{if(bridgeConfig)return;try{window.opener.postMessage({type:'CONFORT_READY',nonce:bridgeNonce},'*');}catch{};readyTries++;if(readyTries===15)operatorStatus.textContent='Esperando respuesta del portal. Si no conecta, volvé a CONFORT STOCK y abrí nuevamente la cámara.';};
+ ready();const readyTimer=setInterval(()=>{if(bridgeConfig){clearInterval(readyTimer);return;}ready();},800);
+}
+window.addEventListener('focus',()=>{if(operatorSending&&!operatorAck)operatorSend();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&operatorSending&&!operatorAck)operatorSend();});
+
 // === ENTREGA POR PUENTE V16 + postMessage + portapapeles ===
 const PUENTE_V16_URL='https://script.google.com/macros/s/AKfycbzOaKPxyH_Z8b7V0T2N9rZza8Wd9B5XbbyRkYF6f9u2x81Ax0HjlBRqLKk-giKWjQ4/exec';
 let puenteV16Guardado=false, puenteV16Enviando=false, puenteV16UltimoLote=[];
@@ -57,3 +343,9 @@ operatorFinish.onclick=async()=>{
   operatorFinish.disabled=false;
  }finally{puenteV16Enviando=false;}
 };
+
+loadPatterns();renderReads();if(!OPERATIVO)cloudInit();log('Motor V16 · modo operativo');
+})();
+</script>
+</body>
+</html>
